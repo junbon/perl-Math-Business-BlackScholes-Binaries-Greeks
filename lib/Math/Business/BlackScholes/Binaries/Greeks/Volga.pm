@@ -1,9 +1,9 @@
-package BOM::Utility::Math::Greeks::Volga;
+package Math::Business::BlackScholes::Binaries::Greeks::Volga;
 use strict;
 use warnings;
 
-use BOM::Utility::Math::Greeks::Vega;
-use BOM::Utility::Math::Routines qw( dgauss );
+use Math::Business::BlackScholes::Binaries::Greeks::Vega;
+use Math::Business::BlackScholes::Binaries::Greeks::Math qw( dgauss );
 use Math::CDF qw( pnorm );
 use Math::Trig;
 use Math::Business::BlackScholes::Binaries;
@@ -30,7 +30,7 @@ sub vanilla_call {
     my $d1 = (log($S / $K) + ($mu + $vol * $vol / 2.0) * $t) / ($vol * sqrt($t));
     my $d2 = $d1 - ($vol * sqrt($t));
 
-    my $vega = BOM::Utility::Math::Greeks::Vega::vanilla_call($S, $K, $t, $r_q, $mu, $vol);
+    my $vega = Math::Business::BlackScholes::Binaries::Greeks::Vega::vanilla_call($S, $K, $t, $r_q, $mu, $vol);
 
     my $volga = $vega * $d1 * $d2 / $vol;
     return $volga;
@@ -306,7 +306,7 @@ sub ot_up_ko_down_pelsser_1997 {
     my $omega  = ($vol * $vol);
 
     my $c = Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
-    my $dc_domega = BOM::Utility::Math::Greeks::Vega::w_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
+    my $dc_domega = Math::Business::BlackScholes::Binaries::Greeks::Vega::w_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
     my $d2c_domega2 = w_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
 
     my $Vu = Math::Business::BlackScholes::Binaries::ot_up_ko_down_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
@@ -338,7 +338,7 @@ sub ot_down_ko_up_pelsser_1997 {
     my $omega  = ($vol * $vol);
 
     my $c = Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
-    my $dc_domega = BOM::Utility::Math::Greeks::Vega::w_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
+    my $dc_domega = Math::Business::BlackScholes::Binaries::Greeks::Vega::w_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     my $d2c_domega2 = w_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
 
     my $Vl = Math::Business::BlackScholes::Binaries::ot_down_ko_up_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);

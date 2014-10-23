@@ -1,4 +1,4 @@
-package BOM::Utility::Math::Greeks::Vega;
+package Math::Business::BlackScholes::Binaries::Greeks::Vega;
 
 =head1 NAME 
 
@@ -16,7 +16,7 @@ use Math::CDF qw( pnorm );
 use Math::Trig;
 use Math::Business::BlackScholes::Binaries;
 
-use BOM::Utility::Math::Routines qw( dgauss );
+use Math::Business::BlackScholes::Binaries::Greeks::Math qw( dgauss );
 
 =head2 vanilla_call
 

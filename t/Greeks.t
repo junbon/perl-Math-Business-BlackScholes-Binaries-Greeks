@@ -1,14 +1,16 @@
+#!/usr/bin/perl
+
+use lib qw { lib t/lib };
 use Test::More tests => 73;
 use Test::NoWarnings;
 
-use BOM::Utility::Format::Numbers qw( roundnear );
-
-use BOM::Utility::Math::Greeks::Delta;
-use BOM::Utility::Math::Greeks::Gamma;
-use BOM::Utility::Math::Greeks::Theta;
-use BOM::Utility::Math::Greeks::Vanna;
-use BOM::Utility::Math::Greeks::Vega;
-use BOM::Utility::Math::Greeks::Volga;
+use Math::Business::BlackScholes::Binaries::Greeks::Delta;
+use Math::Business::BlackScholes::Binaries::Greeks::Gamma;
+use Math::Business::BlackScholes::Binaries::Greeks::Theta;
+use Math::Business::BlackScholes::Binaries::Greeks::Vanna;
+use Math::Business::BlackScholes::Binaries::Greeks::Vega;
+use Math::Business::BlackScholes::Binaries::Greeks::Volga;
+use Roundnear;
 
 my $S     = 1.35;
 my $t     = 7 / 365;
@@ -141,8 +143,15 @@ my @test_cases = ({
 foreach my $case (@test_cases) {
     my $bet_type = $case->{type};
     foreach my $greek (qw(delta gamma theta vanna vega volga)) {
-        my $formula_name = 'BOM::Utility::Math::Greeks::' . ucfirst($greek) . '::' . lc($bet_type);
-        my $computed_value = &$formula_name($S, @{$case->{barriers}}, $t, $r, $r - $q, $sigma), my $test_value = $case->{$greek};
-        is(roundnear(1e-4, $computed_value), $test_value, $bet_type . ' ' . $greek);
+        my $formula_name =
+            'Math::Business::BlackScholes::Binaries::Greeks::'
+          . ucfirst($greek) . '::'
+          . lc($bet_type);
+        my $computed_value =
+          &$formula_name( $S, @{ $case->{barriers} }, $t, $r, $r - $q, $sigma ),
+          my $test_value = $case->{$greek};
+        is( roundnear( 1e-4, $computed_value ),
+            $test_value, $bet_type . ' ' . $greek );
     }
 }
+

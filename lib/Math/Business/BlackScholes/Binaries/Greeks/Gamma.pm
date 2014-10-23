@@ -1,4 +1,4 @@
-package BOM::Utility::Math::Greeks::Gamma;
+package Math::Business::BlackScholes::Binaries::Greeks::Gamma;
 
 =head1 NAME 
 
@@ -15,7 +15,7 @@ use warnings;
 use Math::CDF qw( pnorm );
 use Math::Trig;
 use Math::Business::BlackScholes::Binaries;
-use BOM::Utility::Math::Routines qw( ddgauss dgauss );
+use Math::Business::BlackScholes::Binaries::Greeks::Math qw( ddgauss dgauss );
 
 =head2 vanilla_call
 
@@ -275,11 +275,11 @@ sub ot_up_ko_down_pelsser_1997 {
     my $x   = log($S / $D);
 
     my $c = Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
-    my $dc_dx = BOM::Utility::Math::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
+    my $dc_dx = Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
     my $d2c_dx2 = xx_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
 
     my $dVu_dx = -(($mu_ / ($vol * $vol)) * Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1));
-    $dVu_dx += BOM::Utility::Math::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
+    $dVu_dx += Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
     $dVu_dx *= exp($mu_ * ($h - $x) / ($vol * $vol));
 
     my $d2Vu_dx2 =
@@ -304,11 +304,11 @@ sub ot_down_ko_up_pelsser_1997 {
     my $x   = log($S / $D);
 
     my $c = Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
-    my $dc_dx = BOM::Utility::Math::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
+    my $dc_dx = Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     my $d2c_dx2 = xx_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
 
     my $dVl_dx = -(($mu_ / ($vol * $vol)) * Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0));
-    $dVl_dx -= BOM::Utility::Math::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
+    $dVl_dx -= Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     $dVl_dx *= exp(-$mu_ * $x / ($vol * $vol));
 
     my $d2Vl_dx2 =

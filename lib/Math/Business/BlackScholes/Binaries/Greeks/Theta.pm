@@ -1,4 +1,4 @@
-package BOM::Utility::Math::Greeks::Theta;
+package Math::Business::BlackScholes::Binaries::Greeks::Theta;
 
 =head1 NAME 
 
@@ -16,7 +16,7 @@ use Math::Trig;
 use Math::CDF qw(pnorm);
 use Math::Business::BlackScholes::Binaries;
 
-use BOM::Utility::Math::Routines qw(dgauss);
+use Math::Business::BlackScholes::Binaries::Greeks::Math qw(dgauss);
 
 =head2 vanilla_call
 

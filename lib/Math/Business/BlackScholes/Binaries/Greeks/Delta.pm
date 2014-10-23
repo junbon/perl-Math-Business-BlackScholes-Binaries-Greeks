@@ -1,8 +1,8 @@
-package BOM::Utility::Math::Greeks::Delta;
+package Math::Business::BlackScholes::Binaries::Greeks::Delta;
 
 =head1 NAME
 
-BOM::Utility::Math::Greeks::Delta
+Math::Business::BlackScholes::Binaries::Greeks::Delta
 
 =head1 DESCRIPTION
 
@@ -32,7 +32,7 @@ use Math::CDF qw(pnorm);
 use Math::Trig;
 use Math::Business::BlackScholes::Binaries;
 
-use BOM::Utility::Math::Routines qw( dgauss );
+use Math::Business::BlackScholes::Binaries::Greeks::Math qw( dgauss );
 
 =head2 vanilla_call
 
@@ -322,3 +322,4 @@ sub range {
 }
 
 1;
+
