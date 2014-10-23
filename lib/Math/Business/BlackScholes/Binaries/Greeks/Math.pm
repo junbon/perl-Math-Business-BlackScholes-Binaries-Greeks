@@ -1,4 +1,7 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Math;
+use strict; use warnings;
+
+our $VERSION = '0.01';
 
 =head1 NAME
 
@@ -9,9 +12,6 @@ BOM::Utility::Math::Routines
 Misc math routines.
 
 =cut
-
-use warnings;
-use strict;
 
 use base qw( Exporter );
 our @EXPORT_OK = qw( ddgauss dgauss );
