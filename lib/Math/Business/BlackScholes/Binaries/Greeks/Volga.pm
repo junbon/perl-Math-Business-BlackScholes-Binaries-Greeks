@@ -1,20 +1,21 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Volga;
-use strict;
-use warnings;
+use strict; use warnings;
 
+our $VERSION = '0.01';
+
+use Math::Business::BlackScholes::Binaries;
 use Math::Business::BlackScholes::Binaries::Greeks::Vega;
 use Math::Business::BlackScholes::Binaries::Greeks::Math qw( dgauss );
 use Math::CDF qw( pnorm );
 use Math::Trig;
-use Math::Business::BlackScholes::Binaries;
 
 =head1 NAME 
 
-	Volga
+Math::Business::BlackScholes::Binaries::Greeks::Volga
 
 =head1 DESCRIPTION
 
-	Gets the Volga for different options, Vanilla and Foreign for all our bet types
+Gets the Volga for different options, Vanilla and Foreign for all our bet types
 
 =cut
 

@@ -1,8 +1,11 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Gamma;
+use strict; use warnings;
+
+our $VERSION = '0.01';
 
 =head1 NAME 
 
-	Gamma
+Math::Business::BlackScholes::Binaries::Greeks::Gamma
 
 =head1 DESCRIPTION
 
@@ -10,8 +13,6 @@ package Math::Business::BlackScholes::Binaries::Greeks::Gamma;
 
 =cut
 
-use strict;
-use warnings;
 use Math::CDF qw( pnorm );
 use Math::Trig;
 use Math::Business::BlackScholes::Binaries;
@@ -24,11 +25,14 @@ vanilla_call
 =cut
 
 sub vanilla_call {
-    my ($S0, $Strike, $t, $r_q, $mu, $vol) = @_;
+    my ( $S0, $Strike, $t, $r_q, $mu, $vol ) = @_;
 
-    my $d1 = (log($S0 / $Strike) + ($mu + (($vol**2) / 2)) * $t) / ($vol * sqrt($t));
+    my $d1 =
+      ( log( $S0 / $Strike ) + ( $mu + ( ( $vol**2 ) / 2 ) ) * $t ) /
+      ( $vol * sqrt($t) );
 
-    my $gamma = dgauss($d1) * exp(($mu - $r_q) * $t) / ($S0 * $vol * sqrt($t));
+    my $gamma =
+      dgauss($d1) * exp( ( $mu - $r_q ) * $t ) / ( $S0 * $vol * sqrt($t) );
 
     return $gamma;
 }
@@ -43,27 +47,6 @@ sub vanilla_put {
     return vanilla_call(@_);
 }
 
-=item the_gamma_function_for_binary()
-	
-	USAGE
-	my $gamma = _the_gamma_function_binary($S, $U, $t, $r_q, $mu, $vol);
-
-	DESCRIPTION
-	This part is for binary
-
-	For each function:
-	receive: 
-                - r_q, payout currency interest rate (0.05 = 5%)
-                - mu, quanto drift adjustment (0.05 = 5%)
-		- vol, annualized volatility
-		- t, annualized time to expiration 
-		- S, spot price
-		- U, up barrier
-	calcul:
-		- black $ scholes gamma of a bull bet or binary call
-
-=cut
-
 =head2 call
 
 call
@@ -71,19 +54,20 @@ call
 =cut
 
 sub call {
-    my ($S, $U, $t, $r_q, $mu, $vol) = @_;
+    my ( $S, $U, $t, $r_q, $mu, $vol ) = @_;
 
-    my $v = $mu - ($vol**2) / 2;
-    my $a = log($U / $S);
+    my $v = $mu - ( $vol**2 ) / 2;
+    my $a = log( $U / $S );
 
     my $da = -1 / $S;
-    my $dda = 1 / ($S * $S);
+    my $dda = 1 / ( $S * $S );
 
-    my $q = ($a - $v * $t) / ($vol * sqrt($t));
-    my $dq  = $da /  ($vol * sqrt($t));
-    my $ddq = $dda / ($vol * sqrt($t));
+    my $q = ( $a - $v * $t ) / ( $vol * sqrt($t) );
+    my $dq  = $da /  ( $vol * sqrt($t) );
+    my $ddq = $dda / ( $vol * sqrt($t) );
 
-    my $gamma = -exp(-$r_q * $t) * (ddgauss($q) * $dq * $dq + dgauss($q) * $ddq);
+    my $gamma =
+      -exp( -$r_q * $t ) * ( ddgauss($q) * $dq * $dq + dgauss($q) * $ddq );
 
     return $gamma;
 }
@@ -95,18 +79,19 @@ put
 =cut
 
 sub put {
-    my ($S, $D, $t, $r_q, $mu, $vol) = @_;
+    my ( $S, $D, $t, $r_q, $mu, $vol ) = @_;
 
-    my $v   = $mu - ($vol**2) / 2;
-    my $b   = log($D / $S);
+    my $v   = $mu - ( $vol**2 ) / 2;
+    my $b   = log( $D / $S );
     my $db  = -1 / $S;
-    my $ddb = 1 / ($S * $S);
+    my $ddb = 1 / ( $S * $S );
 
-    my $q = ($b - $v * $t) / ($vol * sqrt($t));
-    my $dq  = $db /  ($vol * sqrt($t));
-    my $ddq = $ddb / ($vol * sqrt($t));
+    my $q = ( $b - $v * $t ) / ( $vol * sqrt($t) );
+    my $dq  = $db /  ( $vol * sqrt($t) );
+    my $ddq = $ddb / ( $vol * sqrt($t) );
 
-    my $gamma = exp(-$r_q * $t) * (ddgauss($q) * $dq * $dq + dgauss($q) * $ddq);
+    my $gamma =
+      exp( -$r_q * $t ) * ( ddgauss($q) * $dq * $dq + dgauss($q) * $ddq );
 
     return $gamma;
 }
@@ -118,9 +103,10 @@ expirymiss
 =cut
 
 sub expirymiss {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol ) = @_;
 
-    return call($S, $U, $t, $r_q, $mu, $vol) + put($S, $D, $t, $r_q, $mu, $vol);
+    return call( $S, $U, $t, $r_q, $mu, $vol ) +
+      put( $S, $D, $t, $r_q, $mu, $vol );
 }
 
 =head2 expiryrange
@@ -130,9 +116,9 @@ expiryrange
 =cut
 
 sub expiryrange {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol ) = @_;
 
-    return -1 * expirymiss($S, $U, $D, $t, $r_q, $mu, $vol);
+    return -1 * expirymiss( $S, $U, $D, $t, $r_q, $mu, $vol );
 }
 
 =head2 onetouch
@@ -142,32 +128,46 @@ onetouch
 =cut
 
 sub onetouch {
-    my ($S, $U, $t, $r_q, $mu, $vol, $w) = @_;
-    if (not defined $w) {
+    my ( $S, $U, $t, $r_q, $mu, $vol, $w ) = @_;
+    if ( not defined $w ) {
         $w = 0;
     }
 
     my $sqrt_t = sqrt($t);
 
-    my $theta = (($mu) / $vol) + (0.5 * $vol);
+    my $theta = ( ($mu) / $vol ) + ( 0.5 * $vol );
 
-    my $theta_ = (($mu) / $vol) - (0.5 * $vol);
+    my $theta_ = ( ($mu) / $vol ) - ( 0.5 * $vol );
 
-    my $v_ = sqrt(($theta_ * $theta_) + (2 * (1 - $w) * $r_q));
+    my $v_ = sqrt( ( $theta_ * $theta_ ) + ( 2 * ( 1 - $w ) * $r_q ) );
 
-    my $e = (log($S / $U) - ($vol * $v_ * $t)) / ($vol * $sqrt_t);
+    my $e = ( log( $S / $U ) - ( $vol * $v_ * $t ) ) / ( $vol * $sqrt_t );
 
-    my $e_ = (-log($S / $U) - ($vol * $v_ * $t)) / ($vol * $sqrt_t);
+    my $e_ = ( -log( $S / $U ) - ( $vol * $v_ * $t ) ) / ( $vol * $sqrt_t );
 
-    my $eta = ($S > $U) ? 1 : -1;
+    my $eta = ( $S > $U ) ? 1 : -1;
 
-    my $part1 = (($U / $S)**(($theta_ + $v_) / $vol)) * pnorm(-$eta * $e) * ($r_q * (1 - $w) + ($mu) * ($theta_ + $v_) / $vol);
-    my $part2 = (($U / $S)**(($theta_ - $v_) / $vol)) * pnorm($eta * $e_) * ($r_q * (1 - $w) + ($mu) * ($theta_ - $v_) / $vol);
-    my $part3 = $eta * (($U / $S)**(($theta_ + $v_) / $vol)) * dgauss($e) * (-$e_ * 0.5 / $t + ($mu) / ($vol * $sqrt_t));
-    my $part4 = $eta * (($U / $S)**(($theta_ - $v_) / $vol)) * dgauss($e_) * ($e * 0.5 / $t + ($mu) / ($vol * $sqrt_t));
+    my $part1 =
+      ( ( $U / $S )**( ( $theta_ + $v_ ) / $vol ) ) *
+      pnorm( -$eta * $e ) *
+      ( $r_q * ( 1 - $w ) + ($mu) * ( $theta_ + $v_ ) / $vol );
+    my $part2 =
+      ( ( $U / $S )**( ( $theta_ - $v_ ) / $vol ) ) *
+      pnorm( $eta * $e_ ) *
+      ( $r_q * ( 1 - $w ) + ($mu) * ( $theta_ - $v_ ) / $vol );
+    my $part3 =
+      $eta *
+      ( ( $U / $S )**( ( $theta_ + $v_ ) / $vol ) ) *
+      dgauss($e) *
+      ( -$e_ * 0.5 / $t + ($mu) / ( $vol * $sqrt_t ) );
+    my $part4 =
+      $eta *
+      ( ( $U / $S )**( ( $theta_ - $v_ ) / $vol ) ) *
+      dgauss($e_) *
+      ( $e * 0.5 / $t + ($mu) / ( $vol * $sqrt_t ) );
 
     my $gamma = $part1 + $part2 + $part3 + $part4;
-    return $gamma * 2 * exp(-$w * $r_q * $t) / ($vol * $vol * $S * $S);
+    return $gamma * 2 * exp( -$w * $r_q * $t ) / ( $vol * $vol * $S * $S );
 }
 
 =head2 notouch
@@ -177,12 +177,12 @@ notouch
 =cut
 
 sub notouch {
-    my ($S, $U, $t, $r_q, $mu, $vol, $w) = @_;
+    my ( $S, $U, $t, $r_q, $mu, $vol, $w ) = @_;
 
     # No touch bet always pay out at end
     $w = 1;
 
-    return -1 * onetouch($S, $U, $t, $r_q, $mu, $vol, $w);
+    return -1 * onetouch( $S, $U, $t, $r_q, $mu, $vol, $w );
 }
 
 =head2 upordown
@@ -192,13 +192,14 @@ upordown
 =cut
 
 sub upordown {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
     # $w = 0, paid at hit
     # $w = 1, paid at end
-    if (not defined $w) { $w = 0; }
+    if ( not defined $w ) { $w = 0; }
 
-    return ot_up_ko_down_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w) + ot_down_ko_up_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
+    return ot_up_ko_down_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) +
+      ot_down_ko_up_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w );
 }
 
 =head2 xx_common_function_pelsser_1997
@@ -208,55 +209,73 @@ xx_common_function_pelsser_1997
 =cut
 
 sub xx_common_function_pelsser_1997 {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta ) = @_;
 
     my $pi = Math::Trig::pi;
 
-    my $h = log($U / $D);
-    my $x = log($S / $D);
+    my $h = log( $U / $D );
+    my $x = log( $S / $D );
 
     # $eta = 1, onetouch up knockout down
     # $eta = 0, onetouch down knockout up
     # This variable used to check stability
-    if (not defined $eta) {
+    if ( not defined $eta ) {
         die
-          "$0: (xx_common_function_pelsser_1997) Wrong usage of this function for S=$S, U=$U, D=$D, t=$t, r=$r_q, mu=$mu, vol=$vol, w=$w. eta not defined.";
+"$0: (xx_common_function_pelsser_1997) Wrong usage of this function for S=$S, U=$U, D=$D, t=$t, r=$r_q, mu=$mu, vol=$vol, w=$w. eta not defined.";
     }
-    if ($eta == 0) { $x = $h - $x; }
+    if ( $eta == 0 ) { $x = $h - $x; }
 
-    my $mu_ = $mu - (0.5 * $vol * $vol);
-    my $mu_dash = sqrt(($mu_ * $mu_) + (2 * $vol * $vol * $r_q * (1 - $w)));
+    my $mu_ = $mu - ( 0.5 * $vol * $vol );
+    my $mu_dash =
+      sqrt( ( $mu_ * $mu_ ) + ( 2 * $vol * $vol * $r_q * ( 1 - $w ) ) );
 
     my $series_part = 0;
     my $hyp_part    = 0;
 
-    my $stability_constant = Math::Business::BlackScholes::Binaries::get_stability_constant_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta, 3);
+    my $stability_constant =
+      Math::Business::BlackScholes::Binaries::get_stability_constant_pelsser_1997(
+        $S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta, 3 );
 
-    my $iterations_required = Math::Business::BlackScholes::Binaries::get_min_iterations_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
+    my $iterations_required =
+      Math::Business::BlackScholes::Binaries::get_min_iterations_pelsser_1997(
+        $S, $U, $D, $t, $r_q, $mu, $vol, $w );
 
-    for (my $k = 1; $k < $iterations_required; $k++) {
-        my $lambda_k_dash = (0.5 * (($mu_dash * $mu_dash) / ($vol * $vol) + ($k * $k * $pi * $pi * $vol * $vol) / ($h * $h)));
+    for ( my $k = 1 ; $k < $iterations_required ; $k++ ) {
+        my $lambda_k_dash = (
+            0.5 * (
+                ( $mu_dash * $mu_dash ) / ( $vol * $vol ) +
+                  ( $k * $k * $pi * $pi * $vol * $vol ) / ( $h * $h )
+            )
+        );
 
-        my $phi = ($vol * $vol) / ($h**4) * exp(-$lambda_k_dash * $t) * ($k**3) / $lambda_k_dash;
+        my $phi =
+          ( $vol * $vol ) / ( $h**4 ) * exp( -$lambda_k_dash * $t ) * ( $k**3 )
+          / $lambda_k_dash;
 
-        $series_part += $phi * ($pi**3) * sin($k * $pi * ($h - $x) / $h);
+        $series_part += $phi * ( $pi**3 ) * sin( $k * $pi * ( $h - $x ) / $h );
 
-        if ($k == 1 and (not(abs($phi / ($S**2)) < $stability_constant))) {
+        if ( $k == 1
+            and ( not( abs( $phi / ( $S**2 ) ) < $stability_constant ) ) )
+        {
             die
-              "$0: PELSSER GAMMA formula for S=$S, U=$U, D=$D, t=$t, r=$r_q, mu=$mu, vol=$vol, w=$w, eta=$eta cannot be evaluated because PELSSER GAMMA stability conditions ($phi / ($S * $S) less than $stability_constant) not met. This could be due to barriers too big, volatilities too low, interest/dividend rates too high, or machine accuracy too low.";
+"$0: PELSSER GAMMA formula for S=$S, U=$U, D=$D, t=$t, r=$r_q, mu=$mu, vol=$vol, w=$w, eta=$eta cannot be evaluated because PELSSER GAMMA stability conditions ($phi / ($S * $S) less than $stability_constant) not met. This could be due to barriers too big, volatilities too low, interest/dividend rates too high, or machine accuracy too low.";
         }
     }
 
     # Need to take care when $mu goes to zero
-    if (abs($mu_) < $Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU) {
-        my $sign = ($mu_ >= 0) ? 1 : -1;
+    if ( abs($mu_) < $Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU ) {
+        my $sign = ( $mu_ >= 0 ) ? 1 : -1;
         $mu_ = $sign * $Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU;
-        $mu_dash = sqrt(($mu_ * $mu_) + (2 * $vol * $vol * $r_q * (1 - $w)));
+        $mu_dash =
+          sqrt( ( $mu_ * $mu_ ) + ( 2 * $vol * $vol * $r_q * ( 1 - $w ) ) );
     }
 
-    $hyp_part = (($mu_dash**2) / ($vol**4)) * (Math::Trig::sinh($mu_dash * $x / ($vol * $vol)) / Math::Trig::sinh($mu_dash * $h / ($vol * $vol)));
+    $hyp_part =
+      ( ( $mu_dash**2 ) / ( $vol**4 ) ) *
+      ( Math::Trig::sinh( $mu_dash * $x / ( $vol * $vol ) ) /
+          Math::Trig::sinh( $mu_dash * $h / ( $vol * $vol ) ) );
 
-    my $d2c_dwdx = ($hyp_part + $series_part) * exp(-$r_q * $t * $w);
+    my $d2c_dwdx = ( $hyp_part + $series_part ) * exp( -$r_q * $t * $w );
 
     return $d2c_dwdx;
 }
@@ -268,26 +287,43 @@ ot_up_ko_down_pelsser_1997
 =cut
 
 sub ot_up_ko_down_pelsser_1997 {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
-    my $mu_ = $mu - (0.5 * $vol * $vol);
-    my $h   = log($U / $D);
-    my $x   = log($S / $D);
+    my $mu_ = $mu - ( 0.5 * $vol * $vol );
+    my $h   = log( $U / $D );
+    my $x   = log( $S / $D );
 
-    my $c = Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
-    my $dc_dx = Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
-    my $d2c_dx2 = xx_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
+    my $c =
+      Math::Business::BlackScholes::Binaries::common_function_pelsser_1997( $S,
+        $U, $D, $t, $r_q, $mu, $vol, $w, 1 );
+    my $dc_dx =
+      Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997(
+        $S, $U, $D, $t, $r_q, $mu, $vol, $w, 1 );
+    my $d2c_dx2 =
+      xx_common_function_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w, 1 );
 
-    my $dVu_dx = -(($mu_ / ($vol * $vol)) * Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1));
-    $dVu_dx += Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
-    $dVu_dx *= exp($mu_ * ($h - $x) / ($vol * $vol));
+    my $dVu_dx = -(
+        ( $mu_ / ( $vol * $vol ) ) *
+          Math::Business::BlackScholes::Binaries::common_function_pelsser_1997(
+            $S, $U, $D, $t, $r_q, $mu, $vol, $w, 1
+          )
+    );
+    $dVu_dx +=
+      Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997(
+        $S, $U, $D, $t, $r_q, $mu, $vol, $w, 1 );
+    $dVu_dx *= exp( $mu_ * ( $h - $x ) / ( $vol * $vol ) );
 
     my $d2Vu_dx2 =
-      ((($mu_**2) / ($vol**4)) * exp(($mu_ / ($vol * $vol)) * ($h - $x)) * $c) -
-      (2 * ($mu_ / ($vol**2)) * exp(($mu_ / ($vol * $vol)) * ($h - $x)) * $dc_dx) +
-      (exp(($mu_ / ($vol**2)) * ($h - $x)) * $d2c_dx2);
+      ( ( ( $mu_**2 ) / ( $vol**4 ) ) *
+          exp( ( $mu_ / ( $vol * $vol ) ) * ( $h - $x ) ) *
+          $c ) -
+      ( 2 *
+          ( $mu_ / ( $vol**2 ) ) *
+          exp( ( $mu_ / ( $vol * $vol ) ) * ( $h - $x ) ) *
+          $dc_dx ) +
+      ( exp( ( $mu_ / ( $vol**2 ) ) * ( $h - $x ) ) * $d2c_dx2 );
 
-    return (1 / ($S**2)) * ($d2Vu_dx2 - $dVu_dx);
+    return ( 1 / ( $S**2 ) ) * ( $d2Vu_dx2 - $dVu_dx );
 }
 
 =head2 ot_down_ko_up_pelsser_1997
@@ -297,26 +333,42 @@ ot_down_ko_up_pelsser_1997
 =cut
 
 sub ot_down_ko_up_pelsser_1997 {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
-    my $mu_ = $mu - (0.5 * $vol * $vol);
-    my $h   = log($U / $D);
-    my $x   = log($S / $D);
+    my $mu_ = $mu - ( 0.5 * $vol * $vol );
+    my $h   = log( $U / $D );
+    my $x   = log( $S / $D );
 
-    my $c = Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
-    my $dc_dx = Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
-    my $d2c_dx2 = xx_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
+    my $c =
+      Math::Business::BlackScholes::Binaries::common_function_pelsser_1997( $S,
+        $U, $D, $t, $r_q, $mu, $vol, $w, 0 );
+    my $dc_dx =
+      Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997(
+        $S, $U, $D, $t, $r_q, $mu, $vol, $w, 0 );
+    my $d2c_dx2 =
+      xx_common_function_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w, 0 );
 
-    my $dVl_dx = -(($mu_ / ($vol * $vol)) * Math::Business::BlackScholes::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0));
-    $dVl_dx -= Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
-    $dVl_dx *= exp(-$mu_ * $x / ($vol * $vol));
+    my $dVl_dx = -(
+        ( $mu_ / ( $vol * $vol ) ) *
+          Math::Business::BlackScholes::Binaries::common_function_pelsser_1997(
+            $S, $U, $D, $t, $r_q, $mu, $vol, $w, 0
+          )
+    );
+    $dVl_dx -=
+      Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997(
+        $S, $U, $D, $t, $r_q, $mu, $vol, $w, 0 );
+    $dVl_dx *= exp( -$mu_ * $x / ( $vol * $vol ) );
 
     my $d2Vl_dx2 =
-      ((($mu_**2) / ($vol**4)) * exp(-($mu_ / ($vol * $vol)) * $x) * $c) +
-      (2 * ($mu_ / ($vol**2)) * exp(-($mu_ / ($vol * $vol)) * $x) * $dc_dx) +
-      (exp(-($mu_ / ($vol**2)) * $x) * $d2c_dx2);
+      ( ( ( $mu_**2 ) / ( $vol**4 ) ) * exp( -( $mu_ / ( $vol * $vol ) ) * $x )
+          * $c ) +
+      ( 2 *
+          ( $mu_ / ( $vol**2 ) ) *
+          exp( -( $mu_ / ( $vol * $vol ) ) * $x ) *
+          $dc_dx ) +
+      ( exp( -( $mu_ / ( $vol**2 ) ) * $x ) * $d2c_dx2 );
 
-    return (1 / ($S**2)) * ($d2Vl_dx2 - $dVl_dx);
+    return ( 1 / ( $S**2 ) ) * ( $d2Vl_dx2 - $dVl_dx );
 }
 
 =head2 range
@@ -326,12 +378,12 @@ range
 =cut
 
 sub range {
-    my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
+    my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
     # Range always pay out at end
     $w = 1;
 
-    return -1 * upordown($S, $U, $D, $t, $r_q, $mu, $vol, $w);
+    return -1 * upordown( $S, $U, $D, $t, $r_q, $mu, $vol, $w );
 }
 
 1;
