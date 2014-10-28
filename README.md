@@ -1,21 +1,21 @@
 
-# Math::Business::BlackScholes::Binaries::Greeks 
+### Math::Business::BlackScholes::Binaries::Greeks 
 [![Build Status](https://travis-ci.org/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks.svg?branch=master)](https://travis-ci.org/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks) [![Coverage Status](https://coveralls.io/repos/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks/badge.png?branch=master)](https://coveralls.io/r/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks?branch=master)
 
 The Greeks modules calculate the sensitivity of the price of binary options to a
 change in the underlying parameters of the financial asset.
 
-### First-order Greeks
+###### First-order Greeks
 - Math::Business::BlackScholes::Binaries::Greeks::Delta
 - Math::Business::BlackScholes::Binaries::Greeks::Vega
 - Math::Business::BlackScholes::Binaries::Greeks::Theta
 
-### Second-order Greeks
+###### Second-order Greeks
 - Math::Business::BlackScholes::Binaries::Greeks::Gamma
 - Math::Business::BlackScholes::Binaries::Greeks::Vanna
 - Math::Business::BlackScholes::Binaries::Greeks::Volga
 
-## INSTALLATION
+#### INSTALLATION
 
 To install this module, run the following commands:
 
@@ -24,7 +24,7 @@ To install this module, run the following commands:
 	make test
 	make install
 
-SUPPORT AND DOCUMENTATION
+#### SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
 perldoc command.
@@ -46,7 +46,7 @@ You can also look for information at:
         http://search.cpan.org/dist/Math-Business-BlackScholes-Binaries-Greeks/
 
 
-LICENSE AND COPYRIGHT
+#### LICENSE AND COPYRIGHT
 
 Copyright (C) 2014 binary.com
 
@@ -54,7 +54,7 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
 copy of the full license at:
 
-L<http://www.perlfoundation.org/artistic_license_2_0>
+http://www.perlfoundation.org/artistic_license_2_0
 
 Any use, modification, and distribution of the Standard or Modified
 Versions is governed by this Artistic License. By using, modifying or
