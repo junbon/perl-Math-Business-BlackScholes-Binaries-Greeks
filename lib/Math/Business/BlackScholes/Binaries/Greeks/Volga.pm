@@ -140,12 +140,6 @@ sub upordown {
     return ot_up_ko_down_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w) + ot_down_ko_up_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
 }
 
-=head2 w_common_function_pelsser_1997
-
-w_common_function_pelsser_1997
-
-=cut
-
 sub w_common_function_pelsser_1997 {
     my ($S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta) = @_;
 
