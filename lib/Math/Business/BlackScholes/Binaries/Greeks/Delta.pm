@@ -1,7 +1,7 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Delta;
 use strict; use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -28,16 +28,16 @@ converted back before interpretation.
 
 =cut
 
+=head1 SUBROUTINES
+
+See L<Math::Business::BlackScholes::Binaries::Greeks>
+
+=cut
+
 use Math::CDF qw(pnorm);
 use Math::Trig;
 use Math::Business::BlackScholes::Binaries;
 use Math::Business::BlackScholes::Binaries::Greeks::Math qw( dgauss );
-
-=head2 vanilla_call
-
-vanilla_call
-
-=cut
 
 sub vanilla_call {
     my ( $S, $K, $t, $r_q, $mu, $vol ) = @_;
@@ -49,12 +49,6 @@ sub vanilla_call {
     return exp( ( $mu - $r_q ) * $t ) * pnorm($d1);
 }
 
-=head2 vanilla_put
-
-vanilla_put
-
-=cut
-
 sub vanilla_put {
     my ( $S, $K, $t, $r_q, $mu, $vol ) = @_;
 
@@ -64,12 +58,6 @@ sub vanilla_put {
 
     return -exp( ( $mu - $r_q ) * $t ) * pnorm( -$d1 );
 }
-
-=head2 call
-
-call
-
-=cut
 
 sub call {
     my ( $S, $U, $t, $r_q, $mu, $vol ) = @_;
@@ -81,12 +69,6 @@ sub call {
     return exp( -$r_q * $t ) * dgauss($d2) / ( $vol * sqrt($t) * $S );
 }
 
-=head2 put
-
-put
-
-=cut
-
 sub put {
     my ( $S, $D, $t, $r_q, $mu, $vol ) = @_;
 
@@ -97,12 +79,6 @@ sub put {
     return -exp( -$r_q * $t ) * dgauss($d2) / ( $vol * sqrt($t) * $S );
 }
 
-=head2 expirymiss
-
-expirymiss
-
-=cut
-
 sub expirymiss {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol ) = @_;
 
@@ -110,23 +86,11 @@ sub expirymiss {
       put( $S, $D, $t, $r_q, $mu, $vol );
 }
 
-=head2 expiryrange
-
-expiryrange
-
-=cut
-
 sub expiryrange {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol ) = @_;
 
     return -1 * expirymiss( $S, $U, $D, $t, $r_q, $mu, $vol );
 }
-
-=head2 onetouch
-
-onetouch
-
-=cut
 
 sub onetouch {
     my ( $S, $U, $t, $r_q, $mu, $vol, $w ) = @_;
@@ -163,12 +127,6 @@ sub onetouch {
     return -$delta * exp( -$w * $r_q * $t ) / ( $vol * $S );
 }
 
-=head2 notouch
-
-notouch
-
-=cut
-
 sub notouch {
     my ( $S, $U, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -177,12 +135,6 @@ sub notouch {
 
     return -1 * onetouch( $S, $U, $t, $r_q, $mu, $vol, $w );
 }
-
-=head2 upordown
-
-upordown
-
-=cut
 
 sub upordown {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
@@ -194,12 +146,6 @@ sub upordown {
     return ot_up_ko_down_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) +
       ot_down_ko_up_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w );
 }
-
-=head2 x_common_function_pelsser_1997
-
-x_common_function_pelsser_1997
-
-=cut
 
 sub x_common_function_pelsser_1997 {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta ) = @_;
@@ -282,12 +228,6 @@ sub x_common_function_pelsser_1997 {
     return $dc_dx;
 }
 
-=head2 ot_up_ko_down_pelsser_1997
-
-ot_up_ko_down_pelsser_1997
-
-=cut
-
 sub ot_up_ko_down_pelsser_1997 {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -310,12 +250,6 @@ sub ot_up_ko_down_pelsser_1997 {
     return $dVu_dx / $S;
 }
 
-=head2 ot_down_ko_up_pelsser_1997
-
-ot_down_ko_up_pelsser_1997
-
-=cut
-
 sub ot_down_ko_up_pelsser_1997 {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -337,26 +271,6 @@ sub ot_down_ko_up_pelsser_1997 {
     # dV/dS = dV/dx * dx/dS = dV/dx * 1/S
     return $dVl_dx / $S;
 }
-
-=item range
-
-  my $delta = range($S, $U, $D, $t, $r_q, $mu, $vol, $w)
-
-DESCRIPTION
-receive:
-- r_q, payout currency interest rate (0.053yy = 5%)
-- mu, quanto drift adjustment (0.05 = 5%)
-- vol, annualized volatility  (example : 0.1)
-- t, annualized time to expiration 
-- S, spot price
-- U, up barrier
-- D, down barrier
-- w, payout at hit=0, at end=1
-
-calcul:
-- black $ scholes delta of a range bet
-
-=cut
 
 sub range {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;

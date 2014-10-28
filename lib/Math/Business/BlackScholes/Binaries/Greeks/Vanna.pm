@@ -1,7 +1,7 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Vanna;
 use strict; use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Math::CDF qw( pnorm );
 use Math::Trig;
@@ -20,9 +20,7 @@ Gets the Vanna for different options, Vanilla and Foreign for all our bet types
 
 =head1 SUBROUTINES
 
-=head2 vanilla_call
-
-vanilla_call
+See L<Math::Business::BlackScholes::Binaries::Greeks>
 
 =cut
 
@@ -41,24 +39,12 @@ sub vanilla_call {
     return $vanna;
 }
 
-=head2 vanilla_put
-
-vanilla_put
-
-=cut
-
 sub vanilla_put {
     my ( $S, $K, $t, $r_q, $mu, $vol ) = @_;
 
   # Same as vanna of vanilla call (because vega_vanilla_call = vega_vanilla_put)
     return vanilla_call( $S, $K, $t, $r_q, $mu, $vol );
 }
-
-=head2 call
-
-call
-
-=cut
 
 sub call {
     my ( $S, $U, $t, $r_q, $mu, $vol ) = @_;
@@ -76,23 +62,11 @@ sub call {
     return $vanna;
 }
 
-=head2 put
-
-put
-
-=cut
-
 sub put {
     my ( $S, $D, $t, $r_q, $mu, $vol ) = @_;
 
     return -1 * call( $S, $D, $t, $r_q, $mu, $vol );
 }
-
-=head2 expirymiss
-
-expirymiss
-
-=cut
 
 sub expirymiss {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol ) = @_;
@@ -101,23 +75,11 @@ sub expirymiss {
       put( $S, $D, $t, $r_q, $mu, $vol );
 }
 
-=head2 expiryrange
-
-expiryrange
-
-=cut
-
 sub expiryrange {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol ) = @_;
 
     return -1 * expirymiss( $S, $U, $D, $t, $r_q, $mu, $vol );
 }
-
-=head2 onetouch
-
-onetouch
-
-=cut
 
 sub onetouch {
     my ( $S, $U, $t, $r_q, $mu, $vol, $w ) = @_;
@@ -186,12 +148,6 @@ sub onetouch {
     return ( $part1 + $part2 ) * exp( -$w * $r_q * $t ) / ( $vol * $S );
 }
 
-=head2 notouch
-
-notouch
-
-=cut
-
 sub notouch {
     my ( $S, $U, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -205,12 +161,6 @@ sub notouch {
     return ( -1 * onetouch( $S, $U, $t, $r_q, $mu, $vol, $w ) );
 }
 
-=head2 upordown
-
-upordown
-
-=cut
-
 sub upordown {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -221,12 +171,6 @@ sub upordown {
     return ot_up_ko_down_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) +
       ot_down_ko_up_pelsser_1997( $S, $U, $D, $t, $r_q, $mu, $vol, $w );
 }
-
-=head2 xw_common_function_pelsser_1997
-
-xw_common_function_pelsser_1997
-
-=cut
 
 sub xw_common_function_pelsser_1997 {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta ) = @_;
@@ -336,12 +280,6 @@ sub xw_common_function_pelsser_1997 {
     return $d2c_domegadx;
 }
 
-=head2 ot_up_ko_down_pelsser_1997
-
-ot_up_ko_down_pelsser_1997
-
-=cut
-
 sub ot_up_ko_down_pelsser_1997 {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -379,12 +317,6 @@ sub ot_up_ko_down_pelsser_1997 {
     return ( 2 * $vol / $S ) * $d2Vu_domegadx;
 }
 
-=head2 ot_down_ko_up_pelsser_1997
-
-ot_down_ko_up_pelsser_1997
-
-=cut
-
 sub ot_down_ko_up_pelsser_1997 {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -420,12 +352,6 @@ sub ot_down_ko_up_pelsser_1997 {
     return ( 2 * $vol / $S ) * $d2Vl_domegadx;
 }
 
-=head2 range
-
-range
-
-=cut
-
 sub range {
     my ( $S, $U, $D, $t, $r_q, $mu, $vol, $w ) = @_;
 
@@ -436,3 +362,4 @@ sub range {
 }
 
 1;
+

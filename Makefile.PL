@@ -20,6 +20,7 @@ WriteMakefile(
         'Test::Exception' => 0,
     },
     PREREQ_PM => {
+        'Math::CDF' => 0,
         'Math::Business::BlackScholes::Binaries' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
