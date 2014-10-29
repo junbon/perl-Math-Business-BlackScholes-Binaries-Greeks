@@ -1,6 +1,6 @@
 
 ### Math::Business::BlackScholes::Binaries::Greeks 
-[![Build Status](https://travis-ci.org/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks.svg?branch=master)](https://travis-ci.org/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks) [![Coverage Status](https://coveralls.io/repos/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks/badge.png?branch=master)](https://coveralls.io/r/binary-com/perl-Math-Business-Blackscholes-Binaries-Greeks?branch=master)
+[![Build Status](https://travis-ci.org/binary-com/perl-Math-Business-BlackScholes-Binaries-Greeks.svg?branch=master)](https://travis-ci.org/binary-com/perl-Math-Business-BlackScholes-Binaries-Greeks) [![Coverage Status](https://coveralls.io/repos/binary-com/perl-Math-Business-BlackScholes-Binaries-Greeks/badge.png?branch=master)](https://coveralls.io/r/binary-com/perl-Math-Business-BlackScholes-Binaries-Greeks?branch=master)
 
 The Greeks modules calculate the sensitivity of the price of binary options to a
 change in the underlying parameters of the financial asset.
