@@ -7,7 +7,7 @@ WriteMakefile(
     NAME             => 'Math::Business::BlackScholes::Binaries::Greeks',
     AUTHOR           => q{binary.com <perl@binary.com>},
     VERSION_FROM     => 'lib/Math/Business/BlackScholes/Binaries/Greeks.pm',
-    ABSTRACT_FROM    => 'lib/Math/Business/BlackScholes/Binaries/Greeks.pm',
+    ABSTRACT         => 'Sensitivity of the price of binary options',
     LICENSE          => 'Artistic_2_0',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
