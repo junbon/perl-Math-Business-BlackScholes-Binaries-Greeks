@@ -792,8 +792,8 @@ foreach my $case (@test_cases) {
             $case->{t} . 'D '
               . $bet_type
               . ' barrier:['
-              . $case->{barriers}[0] . ','
-              . $case->{barriers}[1] . '] '
+              . $case->{barriers}[0]
+              . ($case->{barriers}[1] ? ', ' . $case->{barriers}[1] . '] ' : '] ')
               . $greek
         );
     }
