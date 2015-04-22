@@ -1,7 +1,10 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 use lib qw { lib t/lib };
-use Test::More tests => 349;
+use Test::More tests => 61;
 use Test::NoWarnings;
 
 use Math::Business::BlackScholes::Binaries::Greeks::Delta;
@@ -12,16 +15,17 @@ use Math::Business::BlackScholes::Binaries::Greeks::Vega;
 use Math::Business::BlackScholes::Binaries::Greeks::Volga;
 use Roundnear;
 
-my $r = 0.002;
-my $q = 0.001;
+my %defaults = (
+    r     => 0.002,
+    q     => 0.001,
+    s     => 1.35,
+    sigma => 0.11,
+    t     => 7,
+);
 
-my @test_cases = (
-    {
+my @test_cases = ({
         type     => 'CALL',
         barriers => [1.36],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 17.1969,
         gamma    => 397.7032,
         theta    => -4.4077,
@@ -32,9 +36,6 @@ my @test_cases = (
     {
         type     => 'CALL',
         barriers => [1.25],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0001,
         gamma    => -0.0141,
         theta    => 0.0022,
@@ -45,9 +46,6 @@ my @test_cases = (
     {
         type     => 'CALL',
         barriers => [1.45],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0003,
         gamma    => 0.0714,
         theta    => -0.0008,
@@ -59,8 +57,6 @@ my @test_cases = (
         type     => 'CALL',
         barriers => [1.36],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 2.664,
         gamma    => 0.0538,
         theta    => -0.0033,
@@ -71,9 +67,7 @@ my @test_cases = (
     {
         type     => 'CALL',
         barriers => [1.36],
-        t        => 7,
         sigma    => 1.00,
-        s        => 1.35,
         delta    => 2.1179,
         gamma    => -0.1823,
         theta    => 0.1641,
@@ -86,7 +80,6 @@ my @test_cases = (
         barriers => [50],
         t        => 365,
         sigma    => 1.00,
-        s        => 1.35,
         delta    => 0.0001,
         gamma    => 0.0001,
         theta    => -0.0001,
@@ -97,9 +90,6 @@ my @test_cases = (
     {
         type     => 'PUT',
         barriers => [1.36],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -17.1969,
         gamma    => -397.7032,
         theta    => 4.4097,
@@ -110,9 +100,6 @@ my @test_cases = (
     {
         type     => 'PUT',
         barriers => [1.25],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.0001,
         gamma    => 0.0141,
         theta    => -0.0002,
@@ -123,9 +110,6 @@ my @test_cases = (
     {
         type     => 'PUT',
         barriers => [1.45],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.0003,
         gamma    => -0.0714,
         theta    => 0.0028,
@@ -137,8 +121,6 @@ my @test_cases = (
         type     => 'PUT',
         barriers => [1.36],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -2.664,
         gamma    => -0.0538,
         theta    => 0.0053,
@@ -149,9 +131,7 @@ my @test_cases = (
     {
         type     => 'PUT',
         barriers => [1.36],
-        t        => 7,
         sigma    => 1,
-        s        => 1.35,
         delta    => -2.1179,
         gamma    => 0.1823,
         theta    => -0.1621,
@@ -164,7 +144,6 @@ my @test_cases = (
         barriers => [50],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.0001,
         gamma    => -0.0001,
         theta    => 0.0021,
@@ -175,9 +154,6 @@ my @test_cases = (
     {
         type     => 'VANILLA_CALL',
         barriers => [1.36],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.3172,
         gamma    => 17.3243,
         theta    => -0.1914,
@@ -188,9 +164,6 @@ my @test_cases = (
     {
         type     => 'VANILLA_CALL',
         barriers => [1.25],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 1,
         gamma    => 0.0001,
         theta    => -0.0012,
@@ -201,9 +174,6 @@ my @test_cases = (
     {
         type     => 'VANILLA_CALL',
         barriers => [1.42],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0005,
         gamma    => 0.0811,
         theta    => -0.0009,
@@ -215,8 +185,6 @@ my @test_cases = (
         type     => 'VANILLA_CALL',
         barriers => [1.36],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.4983,
         gamma    => 2.6838,
         theta    => -0.0302,
@@ -227,9 +195,7 @@ my @test_cases = (
     {
         type     => 'VANILLA_CALL',
         barriers => [1.35],
-        t        => 7,
         sigma    => 1,
-        s        => 1.35,
         delta    => 0.5276,
         gamma    => 2.1287,
         theta    => -1.9404,
@@ -242,7 +208,6 @@ my @test_cases = (
         barriers => [100],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => 0.0001,
         gamma    => 0.0002,
         theta    => -0.0002,
@@ -253,9 +218,6 @@ my @test_cases = (
     {
         type     => 'VANILLA_PUT',
         barriers => [1.36],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.6828,
         gamma    => 17.3243,
         theta    => -0.1901,
@@ -266,9 +228,6 @@ my @test_cases = (
     {
         type     => 'VANILLA_PUT',
         barriers => [1.25],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0,
         gamma    => 0.0001,
         theta    => 0,
@@ -279,9 +238,6 @@ my @test_cases = (
     {
         type     => 'VANILLA_PUT',
         barriers => [1.42],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.9995,
         gamma    => 0.0811,
         theta    => 0.0006,
@@ -293,8 +249,6 @@ my @test_cases = (
         type     => 'VANILLA_PUT',
         barriers => [1.36],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.5007,
         gamma    => 2.6838,
         theta    => -0.0288,
@@ -305,9 +259,7 @@ my @test_cases = (
     {
         type     => 'VANILLA_PUT',
         barriers => [1.35],
-        t        => 7,
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.4723,
         gamma    => 2.1287,
         theta    => -1.939,
@@ -320,7 +272,6 @@ my @test_cases = (
         barriers => [100],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.9989,
         gamma    => 0.0002,
         theta    => 0.1981,
@@ -331,9 +282,6 @@ my @test_cases = (
     {
         type     => 'ONETOUCH',
         barriers => [1.36],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 34.5897,
         gamma    => 806.1289,
         theta    => -8.9339,
@@ -343,10 +291,19 @@ my @test_cases = (
     },
     {
         type     => 'ONETOUCH',
+        barriers => [1.36],
+        r        => -0.005,
+        q        => -0.002,
+        delta    => 34.6581,
+        gamma    => 820.7704,
+        theta    => -8.9127,
+        vanna    => -237.9236,
+        vega     => 3.1285,
+        volga    => -50.2344,
+    },
+    {
+        type     => 'ONETOUCH',
         barriers => [1.25],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.0001,
         gamma    => 0.0282,
         theta    => -0.0003,
@@ -357,9 +314,6 @@ my @test_cases = (
     {
         type     => 'ONETOUCH',
         barriers => [1.45],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0006,
         gamma    => 0.143,
         theta    => -0.0016,
@@ -370,9 +324,6 @@ my @test_cases = (
     {
         type     => 'ONETOUCH',
         barriers => [1.34],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -34.3549,
         gamma    => 824.2202,
         theta    => -9.0403,
@@ -383,9 +334,7 @@ my @test_cases = (
     {
         type     => 'ONETOUCH',
         barriers => [1.36],
-        t        => 7,
         sigma    => 1,
-        s        => 1.35,
         delta    => 4.6076,
         gamma    => 1.2027,
         theta    => -1.1003,
@@ -398,7 +347,6 @@ my @test_cases = (
         barriers => [50],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => 0.0001,
         gamma    => 0.0003,
         theta    => -0.0003,
@@ -409,9 +357,6 @@ my @test_cases = (
     {
         type     => 'NOTOUCH',
         barriers => [1.36],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -34.5882,
         gamma    => -806.0155,
         theta    => 8.9347,
@@ -422,9 +367,6 @@ my @test_cases = (
     {
         type     => 'NOTOUCH',
         barriers => [1.25],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0001,
         gamma    => -0.0282,
         theta    => 0.0023,
@@ -435,9 +377,6 @@ my @test_cases = (
     {
         type     => 'NOTOUCH',
         barriers => [1.45],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.0006,
         gamma    => -0.143,
         theta    => 0.0036,
@@ -448,9 +387,6 @@ my @test_cases = (
     {
         type     => 'NOTOUCH',
         barriers => [1.34],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 34.3534,
         gamma    => -824.1062,
         theta    => 9.0411,
@@ -461,9 +397,7 @@ my @test_cases = (
     {
         type     => 'NOTOUCH',
         barriers => [1.36],
-        t        => 7,
         sigma    => 1,
-        s        => 1.35,
         delta    => -4.6073,
         gamma    => -1.2006,
         theta    => 1.1004,
@@ -476,7 +410,6 @@ my @test_cases = (
         barriers => [50],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.0001,
         gamma    => -0.0003,
         theta    => 0.0023,
@@ -486,10 +419,7 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYRANGE',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [1.36, 1.34],
         delta    => 0.0764,
         gamma    => -815.1082,
         theta    => 8.9881,
@@ -499,10 +429,7 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYRANGE',
-        barriers => [ 2.5, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [2.5, 1.34],
         delta    => 17.2733,
         gamma    => -417.405,
         theta    => 4.5804,
@@ -512,10 +439,8 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYRANGE',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
+        barriers => [1.36, 1.34],
         sigma    => 1,
-        s        => 1.35,
         delta    => 0.0157,
         gamma    => -1.2222,
         theta    => 1.1138,
@@ -525,10 +450,8 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYRANGE',
-        barriers => [ 1.36, 1.34 ],
+        barriers => [1.36, 1.34],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0164,
         gamma    => -2.4307,
         theta    => 0.0269,
@@ -538,10 +461,9 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYRANGE',
-        barriers => [ 50, 0.05 ],
+        barriers => [50, 0.05],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => 0.0058,
         gamma    => -0.0167,
         theta    => 0.0172,
@@ -551,10 +473,7 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYMISS',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [1.36, 1.34],
         delta    => -0.0764,
         gamma    => 815.1082,
         theta    => -8.9861,
@@ -564,10 +483,7 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYMISS',
-        barriers => [ 2.5, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [2.5, 1.34],
         delta    => -17.2733,
         gamma    => 417.405,
         theta    => -4.5784,
@@ -577,10 +493,8 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYMISS',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
+        barriers => [1.36, 1.34],
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.0157,
         gamma    => 1.2222,
         theta    => -1.1118,
@@ -590,10 +504,8 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYMISS',
-        barriers => [ 1.36, 1.34 ],
+        barriers => [1.36, 1.34],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => -0.0164,
         gamma    => 2.4307,
         theta    => -0.0249,
@@ -603,10 +515,9 @@ my @test_cases = (
     },
     {
         type     => 'EXPIRYMISS',
-        barriers => [ 50, 0.05 ],
+        barriers => [50, 0.05],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.0058,
         gamma    => 0.0167,
         theta    => -0.0152,
@@ -616,10 +527,7 @@ my @test_cases = (
     },
     {
         type     => 'RANGE',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [1.36, 1.34],
         delta    => -0.0042,
         gamma    => -170.3061,
         theta    => 1.8778,
@@ -629,10 +537,7 @@ my @test_cases = (
     },
     {
         type     => 'RANGE',
-        barriers => [ 2.5, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [2.5, 1.34],
         delta    => 34.3536,
         gamma    => -824.0811,
         theta    => 9.0408,
@@ -642,10 +547,8 @@ my @test_cases = (
     },
     {
         type     => 'RANGE',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
+        barriers => [1.36, 1.34],
         sigma    => 0.05,
-        s        => 1.35,
         delta    => -0.3656,
         gamma    => -10683.449,
         theta    => 24.3396,
@@ -655,10 +558,8 @@ my @test_cases = (
     },
     {
         type     => 'RANGE',
-        barriers => [ 1.4, 1.3 ],
+        barriers => [1.4, 1.3],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0,
         gamma    => -0.0237,
         theta    => 0.0003,
@@ -668,10 +569,9 @@ my @test_cases = (
     },
     {
         type     => 'RANGE',
-        barriers => [ 50, 0.05 ],
+        barriers => [50, 0.05],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => 0.0102,
         gamma    => -0.0292,
         theta    => 0.0286,
@@ -681,10 +581,7 @@ my @test_cases = (
     },
     {
         type     => 'RANGE',
-        barriers => [ 1.35, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [1.35, 1.34],
         delta    => 0,
         gamma    => 0,
         theta    => 0.002,
@@ -694,10 +591,7 @@ my @test_cases = (
     },
     {
         type     => 'UPORDOWN',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [1.36, 1.34],
         delta    => 0.0042,
         gamma    => 170.4863,
         theta    => -1.8778,
@@ -707,10 +601,7 @@ my @test_cases = (
     },
     {
         type     => 'UPORDOWN',
-        barriers => [ 2.5, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [2.5, 1.34],
         delta    => -34.3551,
         gamma    => 824.1951,
         theta    => -9.04,
@@ -720,10 +611,8 @@ my @test_cases = (
     },
     {
         type     => 'UPORDOWN',
-        barriers => [ 1.36, 1.34 ],
-        t        => 7,
+        barriers => [1.36, 1.34],
         sigma    => 0.05,
-        s        => 1.35,
         delta    => 0.3656,
         gamma    => 10683.9465,
         theta    => -24.3387,
@@ -733,10 +622,8 @@ my @test_cases = (
     },
     {
         type     => 'UPORDOWN',
-        barriers => [ 1.4, 1.3 ],
+        barriers => [1.4, 1.3],
         t        => 365,
-        sigma    => 0.11,
-        s        => 1.35,
         delta    => 0.0001,
         gamma    => 0.2051,
         theta    => -0.0003,
@@ -746,10 +633,9 @@ my @test_cases = (
     },
     {
         type     => 'UPORDOWN',
-        barriers => [ 50, 0.05 ],
+        barriers => [50, 0.05],
         t        => 365,
         sigma    => 1,
-        s        => 1.35,
         delta    => -0.0102,
         gamma    => 0.0292,
         theta    => -0.0266,
@@ -759,10 +645,7 @@ my @test_cases = (
     },
     {
         type     => 'UPORDOWN',
-        barriers => [ 1.35, 1.34 ],
-        t        => 7,
-        sigma    => 0.11,
-        s        => 1.35,
+        barriers => [1.35, 1.34],
         delta    => 0.0009,
         gamma    => 0.1813,
         theta    => 0,
@@ -770,32 +653,43 @@ my @test_cases = (
         vega     => 0,
         volga    => 0,
     },
+    {
+        type     => 'UPORDOWN',
+        barriers => [1.35, 1.34],
+        r        => -0.005,
+        q        => -0.002,
+        delta    => -0.0015,
+        gamma    => -0.3075,
+        theta    => 0,
+        vanna    => 0.0518,
+        vega     => 0,
+        volga    => 0,
+    },
+
 );
 
 foreach my $case (@test_cases) {
     my $bet_type = $case->{type};
-    foreach my $greek (qw(delta gamma theta vanna vega volga)) {
-        my $formula_name =
-            'Math::Business::BlackScholes::Binaries::Greeks::'
-          . ucfirst($greek) . '::'
-          . lc($bet_type);
-        my $computed_value = &$formula_name(
-            $case->{s},
-            @{ $case->{barriers} },
-            $case->{t} / 365,
-            $r, $r - $q, $case->{sigma}
-          ),
-          my $test_value = $case->{$greek};
-        is(
-            roundnear( 1e-4, $computed_value ),
-            $test_value,
-            $case->{t} . 'D '
-              . $bet_type
-              . ' barrier:['
-              . $case->{barriers}[0]
-              . ($case->{barriers}[1] ? ', ' . $case->{barriers}[1] . '] ' : '] ')
-              . $greek
-        );
+    foreach my $key (keys %defaults) {
+        $case->{$key} //= $defaults{$key};
     }
+    my $case_descrip =
+          $case->{t} . 'D '
+        . $bet_type . ' '
+        . 'sigma: ['
+        . $case->{sigma} . '] '
+        . 'barrier:['
+        . $case->{barriers}[0]
+        . ($case->{barriers}[1] ? ', ' . $case->{barriers}[1] : '') . '] '
+        . 's,r,q:['
+        . join(', ', map { $case->{$_} } ('s', 'r', 'q')) . ']';
+    subtest $case_descrip => sub {
+        foreach my $greek (qw(delta gamma theta vanna vega volga)) {
+            my $formula_name   = 'Math::Business::BlackScholes::Binaries::Greeks::' . ucfirst($greek) . '::' . lc($bet_type);
+            my $formula        = \&$formula_name;
+            my $computed_value = $formula->($case->{s}, @{$case->{barriers}}, $case->{t} / 365, $case->{r}, $case->{r} - $case->{q}, $case->{sigma});
+            is(roundnear(1e-4, $computed_value), $case->{$greek}, $greek);
+        }
+    };
 }
 
