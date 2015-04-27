@@ -1,7 +1,7 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Math;
 use strict; use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.04';
 
 =head1 NAME
 

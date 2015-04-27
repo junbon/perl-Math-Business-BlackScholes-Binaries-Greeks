@@ -1,15 +1,16 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Volga;
 use strict; use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
+use List::Util qw( max );
 use Math::Business::BlackScholes::Binaries;
 use Math::Business::BlackScholes::Binaries::Greeks::Vega;
 use Math::Business::BlackScholes::Binaries::Greeks::Math qw( dgauss );
 use Math::CDF qw( pnorm );
 use Math::Trig;
 
-=head1 NAME 
+=head1 NAME
 
 Math::Business::BlackScholes::Binaries::Greeks::Volga
 
@@ -82,7 +83,8 @@ sub onetouch {
     my $theta  = (($mu) / $vol) + (0.5 * $vol);
     my $theta_ = (($mu) / $vol) - (0.5 * $vol);
 
-    my $v_ = sqrt(($theta_ * $theta_) + (2 * (1 - $w) * $r_q));
+    # Floor v_ squared at just above zero in case negative interest rates push it negative.
+    my $v_ = sqrt( max( $Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU, ( $theta_ * $theta_ ) + ( 2 * ( 1 - $w ) * $r_q ) ) );
 
     my $e = (log($S / $U) - ($vol * $v_ * $t)) / ($vol * $sqrt_t);
     my $e_ = (-log($S / $U) - ($vol * $v_ * $t)) / ($vol * $sqrt_t);
@@ -158,7 +160,7 @@ sub w_common_function_pelsser_1997 {
     if ($eta == 0) { $x = $h - $x; }
 
     my $mu_new = $mu - (0.5 * $vol * $vol);
-    my $mu_dash = sqrt(($mu_new * $mu_new) + (2 * $vol * $vol * $r_q * (1 - $w)));
+    my $mu_dash = sqrt(max($Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU,($mu_new * $mu_new) + (2 * $vol * $vol * $r_q * (1 - $w))));
 
     my $r_dash = $r_q * (1 - $w);
     my $omega = ($vol * $vol);
