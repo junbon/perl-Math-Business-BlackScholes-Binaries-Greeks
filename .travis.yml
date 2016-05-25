@@ -13,7 +13,7 @@ before_install:
     - build-perl
     - perl -V
     # install prereqs
-    - "cpanm Math::Business::BlackScholes::Binaries"
-    - "cpanm Devel::Cover::Report::Coveralls"
+    - "cpanm -n Math::Business::BlackScholes::Binaries"
+    - "cpanm -n Devel::Cover::Report::Coveralls"
 script:
     perl Makefile.PL && make test && cover -test -report coveralls
