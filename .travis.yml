@@ -15,6 +15,7 @@ before_install:
     # install prereqs
     - "cpanm -n Math::Business::BlackScholes::Binaries"
     - "cpanm -n Devel::Cover::Report::Coveralls"
+    - "cpanm -n Test::NoWarnings"
     - "cpanm --installdeps -n ."
 script:
     perl Makefile.PL && make test && cover -test -report coveralls
