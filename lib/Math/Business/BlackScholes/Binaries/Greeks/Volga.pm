@@ -1,7 +1,7 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Volga;
 use strict; use warnings;
 
-our $VERSION = '0.04';
+## VERSION
 
 use List::Util qw( max );
 use Math::Business::BlackScholes::Binaries;
