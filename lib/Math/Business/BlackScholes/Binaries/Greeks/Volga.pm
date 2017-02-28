@@ -1,7 +1,8 @@
 package Math::Business::BlackScholes::Binaries::Greeks::Volga;
-use strict; use warnings;
+use strict;
+use warnings;
 
-our $VERSION = '0.04';
+## VERSION
 
 use List::Util qw( max );
 use Math::Business::BlackScholes::Binaries;
@@ -84,7 +85,7 @@ sub onetouch {
     my $theta_ = (($mu) / $vol) - (0.5 * $vol);
 
     # Floor v_ squared at just above zero in case negative interest rates push it negative.
-    my $v_ = sqrt( max( $Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU, ( $theta_ * $theta_ ) + ( 2 * ( 1 - $w ) * $r_q ) ) );
+    my $v_ = sqrt(max($Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU, ($theta_ * $theta_) + (2 * (1 - $w) * $r_q)));
 
     my $e = (log($S / $U) - ($vol * $v_ * $t)) / ($vol * $sqrt_t);
     my $e_ = (-log($S / $U) - ($vol * $v_ * $t)) / ($vol * $sqrt_t);
@@ -155,12 +156,12 @@ sub w_common_function_pelsser_1997 {
     # This variable used to check stability
     if (not defined $eta) {
         die
-          "$0: (w_common_function_pelsser_1997) Wrong usage of this function for S=$S, U=$U, D=$D, t=$t, r_q=$r_q, mu=$mu, vol=$vol, w=$w. eta not defined.";
+            "$0: (w_common_function_pelsser_1997) Wrong usage of this function for S=$S, U=$U, D=$D, t=$t, r_q=$r_q, mu=$mu, vol=$vol, w=$w. eta not defined.";
     }
     if ($eta == 0) { $x = $h - $x; }
 
     my $mu_new = $mu - (0.5 * $vol * $vol);
-    my $mu_dash = sqrt(max($Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU,($mu_new * $mu_new) + (2 * $vol * $vol * $r_q * (1 - $w))));
+    my $mu_dash = sqrt(max($Math::Business::BlackScholes::Binaries::SMALL_VALUE_MU, ($mu_new * $mu_new) + (2 * $vol * $vol * $r_q * (1 - $w))));
 
     my $r_dash = $r_q * (1 - $w);
     my $omega = ($vol * $vol);
@@ -168,7 +169,8 @@ sub w_common_function_pelsser_1997 {
     my $series_part = 0;
     my $hyp_part    = 0;
 
-    my $stability_constant = Math::Business::BlackScholes::Binaries::get_stability_constant_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta, 1);
+    my $stability_constant =
+        Math::Business::BlackScholes::Binaries::get_stability_constant_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta, 1);
 
     my $iterations_required = Math::Business::BlackScholes::Binaries::get_min_iterations_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
 
@@ -179,8 +181,6 @@ sub w_common_function_pelsser_1997 {
         my $dlambdak_domega = 0.5 * (-($mu_new / $omega) - (($mu_new * $mu_new) / ($omega * $omega)) + (($k * $k * $pi * $pi) / ($h * $h)));
         my $d2lambdak_domega2 = 0.5 * ($omega + 2 * $mu_new) / (2 * $omega * $omega);
         $d2lambdak_domega2 *= (1 + (2 * $mu_new / $omega));
-
-        my $beta_k = exp(-$lambda_k_dash * $t) / $lambda_k_dash;
 
         # d{beta_k}/d{lambda_k}
         my $dbetak_dlambdak = -exp(-$lambda_k_dash * $t) * (($t * $lambda_k_dash + 1) / ($lambda_k_dash**2));
@@ -196,7 +196,7 @@ sub w_common_function_pelsser_1997 {
 
         if ($k == 1 and (not(abs(4 * $vol * $vol * $phi) < $stability_constant))) {
             die
-              "$0: PELSSER VOLGA formula for S=$S, U=$U, D=$D, t=$t, r_q=$r_q, mu=$mu, vol=$vol, w=$w, eta=$eta cannot be evaluated because PELSSER VOLGA stability conditions (4 * $vol * $vol * $phi less than $stability_constant) not met. This could be due to barriers too big, volatilities too low, interest/dividend rates too high, or machine accuracy too low.";
+                "$0: PELSSER VOLGA formula for S=$S, U=$U, D=$D, t=$t, r_q=$r_q, mu=$mu, vol=$vol, w=$w, eta=$eta cannot be evaluated because PELSSER VOLGA stability conditions (4 * $vol * $vol * $phi less than $stability_constant) not met. This could be due to barriers too big, volatilities too low, interest/dividend rates too high, or machine accuracy too low.";
         }
     }
 
@@ -205,8 +205,8 @@ sub w_common_function_pelsser_1997 {
 
     my $d2alpha_domega2 = $alpha * ($omega**3) * (2 * $mu_new + $omega - 4 * $r_dash);
     $d2alpha_domega2 +=
-      (($mu_new * $omega) + (2 * $mu_new * $mu_new) + (2 * $r_dash * $omega)) *
-      ((6 * $alpha * $omega * $omega) + (2 * $omega * $omega * $omega * $dalpha_domega));
+        (($mu_new * $omega) + (2 * $mu_new * $mu_new) + (2 * $r_dash * $omega)) *
+        ((6 * $alpha * $omega * $omega) + (2 * $omega * $omega * $omega * $dalpha_domega));
     $d2alpha_domega2 = $d2alpha_domega2 / (4 * $alpha * $alpha * ($omega**6));
 
     # We have to handle the special case where the denominator approaches 0, see our documentation in
@@ -216,11 +216,11 @@ sub w_common_function_pelsser_1997 {
         $hyp_part1 = 0;
     } else {
         $hyp_part1 =
-          Math::Trig::sinh($alpha * $h) *
-          ($h**2 - $x**2) *
-          (Math::Trig::cosh($alpha * ($h - $x)) - Math::Trig::cosh($alpha * ($h + $x))) -
-          (2 * $h * Math::Trig::cosh($alpha * $h)) *
-          ((($h + $x) * Math::Trig::sinh($alpha * ($h - $x))) - (($h - $x) * Math::Trig::sinh($alpha * ($h + $x))));
+            Math::Trig::sinh($alpha * $h) *
+            ($h**2 - $x**2) *
+            (Math::Trig::cosh($alpha * ($h - $x)) - Math::Trig::cosh($alpha * ($h + $x))) -
+            (2 * $h * Math::Trig::cosh($alpha * $h)) *
+            ((($h + $x) * Math::Trig::sinh($alpha * ($h - $x))) - (($h - $x) * Math::Trig::sinh($alpha * ($h + $x))));
         $hyp_part1 *= ($dalpha_domega**2) / (2 * (Math::Trig::sinh($alpha * $h)**3));
     }
 
@@ -229,8 +229,8 @@ sub w_common_function_pelsser_1997 {
         $hyp_part2 = 0;
     } else {
         $hyp_part2 =
-          ($d2alpha_domega2 / (2 * (Math::Trig::sinh($alpha * $h)**2))) *
-          (($h + $x) * Math::Trig::sinh($alpha * ($h - $x)) - ($h - $x) * Math::Trig::sinh($alpha * ($h + $x)));
+            ($d2alpha_domega2 / (2 * (Math::Trig::sinh($alpha * $h)**2))) *
+            (($h + $x) * Math::Trig::sinh($alpha * ($h - $x)) - ($h - $x) * Math::Trig::sinh($alpha * ($h + $x)));
     }
 
     $hyp_part = $hyp_part1 + $hyp_part2;
@@ -258,10 +258,10 @@ sub ot_up_ko_down_pelsser_1997 {
     $dVu_domega *= exp($mu_new * ($h - $x) / $omega);
 
     my $d2Vu_domega2 =
-      -((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * ($h - $x) * $dVu_domega) +
-      ((($omega + (2 * $mu_new)) / ($omega**3)) * ($h - $x) * $Vu) -
-      ((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * ($h - $x) * exp($mu_new * ($h - $x) / $omega) * $dc_domega) +
-      (exp($mu_new * ($h - $x) / $omega) * $d2c_domega2);
+        -((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * ($h - $x) * $dVu_domega) +
+        ((($omega + (2 * $mu_new)) / ($omega**3)) * ($h - $x) * $Vu) -
+        ((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * ($h - $x) * exp($mu_new * ($h - $x) / $omega) * $dc_domega) +
+        (exp($mu_new * ($h - $x) / $omega) * $d2c_domega2);
 
     return (4 * $vol * $vol * $d2Vu_domega2) + (2 * $dVu_domega);
 }
@@ -270,7 +270,6 @@ sub ot_down_ko_up_pelsser_1997 {
     my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
 
     my $mu_new = $mu - (0.5 * $vol * $vol);
-    my $h      = log($U / $D);
     my $x      = log($S / $D);
     my $omega  = ($vol * $vol);
 
@@ -284,10 +283,10 @@ sub ot_down_ko_up_pelsser_1997 {
     $dVl_domega *= exp(-$mu_new * $x / $omega);
 
     my $d2Vl_domega2 =
-      ((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * $x * $dVl_domega) -
-      ((($omega + (2 * $mu_new)) / ($omega**3)) * $x * $Vl) +
-      ((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * $x * exp(-$mu_new * $x / $omega) * $dc_domega) +
-      (exp(-$mu_new * $x / $omega) * $d2c_domega2);
+        ((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * $x * $dVl_domega) -
+        ((($omega + (2 * $mu_new)) / ($omega**3)) * $x * $Vl) +
+        ((((0.5 * $omega) + $mu_new) / ($omega * $omega)) * $x * exp(-$mu_new * $x / $omega) * $dc_domega) +
+        (exp(-$mu_new * $x / $omega) * $d2c_domega2);
 
     return (4 * $vol * $vol * $d2Vl_domega2) + (2 * $dVl_domega);
 }
