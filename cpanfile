@@ -1,4 +1,4 @@
-requires 'Math::Business::BlackScholes::Binaries';
+requires 'Math::Business::BlackScholesMerton';
 requires 'Math::CDF';
 requires 'perl', '5.006';
 
