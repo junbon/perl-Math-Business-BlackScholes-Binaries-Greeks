@@ -161,7 +161,7 @@ sub common_function_pelsser_1997 {
     my $stability_constant =
         Math::Business::BlackScholesMerton::Binaries::get_stability_constant_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, $eta, 1);
 
-    my $iterations_required = Math::Business::BlackScholes::BinariesMerton::get_min_iterations_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
+    my $iterations_required = Math::Business::BlackScholesMerton::Binaries::get_min_iterations_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w);
 
     for (my $k = 1; $k < $iterations_required; $k++) {
         my $lambda_k_dash = (0.5 * (($mu_dash * $mu_dash) / ($vol * $vol) + ($k * $k * $pi * $pi * $vol * $vol) / ($h * $h)));
