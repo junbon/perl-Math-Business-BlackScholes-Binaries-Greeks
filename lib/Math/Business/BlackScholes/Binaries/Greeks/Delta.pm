@@ -204,7 +204,8 @@ sub ot_up_ko_down_pelsser_1997 {
     my $x      = log($S / $D);
 
     my $dVu_dx =
-        -(($mu_new / ($vol * $vol)) * Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1));
+        -(($mu_new / ($vol * $vol)) *
+            Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1));
 
     $dVu_dx += x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
     $dVu_dx *= exp($mu_new * ($h - $x) / ($vol * $vol));
@@ -217,10 +218,11 @@ sub ot_down_ko_up_pelsser_1997 {
     my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
 
     my $mu_new = $mu - (0.5 * $vol * $vol);
-    my $x      = log($S / $D);
+    my $x = log($S / $D);
 
     my $dVl_dx =
-        -(($mu_new / ($vol * $vol)) * Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0));
+        -(($mu_new / ($vol * $vol)) *
+            Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0));
 
     $dVl_dx -= x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     $dVl_dx *= exp(-$mu_new * $x / ($vol * $vol));

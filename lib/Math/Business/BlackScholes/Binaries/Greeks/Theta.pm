@@ -207,7 +207,7 @@ sub ot_down_ko_up_pelsser_1997 {
     my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
 
     my $mu_ = $mu - (0.5 * $vol * $vol);
-    my $x   = log($S / $D);
+    my $x = log($S / $D);
 
     my $dc_dT = common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
 
