@@ -45,12 +45,12 @@ sub call {
     my ($S, $U, $t, $r_q, $mu, $vol) = @_;
 
     my $v = $mu - ($vol**2) / 2;
-    my $a = log($U / $S);
+    my $log = log($U / $S);
 
     my $da = -1 / $S;
     my $dda = 1 / ($S * $S);
 
-    my $q = ($a - $v * $t) / ($vol * sqrt($t));
+    my $q = ($log - $v * $t) / ($vol * sqrt($t));
     my $dq  = $da /  ($vol * sqrt($t));
     my $ddq = $dda / ($vol * sqrt($t));
 
@@ -64,11 +64,11 @@ sub put {
     my ($S, $D, $t, $r_q, $mu, $vol) = @_;
 
     my $v   = $mu - ($vol**2) / 2;
-    my $b   = log($D / $S);
+    my $log = log($D / $S);
     my $db  = -1 / $S;
     my $ddb = 1 / ($S * $S);
 
-    my $q = ($b - $v * $t) / ($vol * sqrt($t));
+    my $q = ($log - $v * $t) / ($vol * sqrt($t));
     my $dq  = $db /  ($vol * sqrt($t));
     my $ddq = $ddb / ($vol * sqrt($t));
 
@@ -208,7 +208,8 @@ sub ot_up_ko_down_pelsser_1997 {
     my $d2c_dx2 = xx_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
 
     my $dVu_dx =
-        -(($mu_ / ($vol * $vol)) * Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1));
+        -(
+        ($mu_ / ($vol * $vol)) * Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1));
     $dVu_dx += Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 1);
     $dVu_dx *= exp($mu_ * ($h - $x) / ($vol * $vol));
 
@@ -224,14 +225,15 @@ sub ot_down_ko_up_pelsser_1997 {
     my ($S, $U, $D, $t, $r_q, $mu, $vol, $w) = @_;
 
     my $mu_ = $mu - (0.5 * $vol * $vol);
-    my $x   = log($S / $D);
+    my $x = log($S / $D);
 
     my $c = Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     my $dc_dx = Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     my $d2c_dx2 = xx_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
 
     my $dVl_dx =
-        -(($mu_ / ($vol * $vol)) * Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0));
+        -(
+        ($mu_ / ($vol * $vol)) * Math::Business::BlackScholesMerton::Binaries::common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0));
     $dVl_dx -= Math::Business::BlackScholes::Binaries::Greeks::Delta::x_common_function_pelsser_1997($S, $U, $D, $t, $r_q, $mu, $vol, $w, 0);
     $dVl_dx *= exp(-$mu_ * $x / ($vol * $vol));
 
