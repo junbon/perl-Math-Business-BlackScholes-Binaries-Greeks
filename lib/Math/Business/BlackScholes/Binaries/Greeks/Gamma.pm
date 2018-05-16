@@ -44,13 +44,13 @@ sub vanilla_put {
 sub call {
     my ($S, $U, $t, $r_q, $mu, $vol) = @_;
 
-    my $v = $mu - ($vol**2) / 2;
-    my $log = log($U / $S);
+    my $v         = $mu - ($vol**2) / 2;
+    my $log_value = log($U / $S);
 
     my $da = -1 / $S;
     my $dda = 1 / ($S * $S);
 
-    my $q = ($log - $v * $t) / ($vol * sqrt($t));
+    my $q   = ($log_value - $v * $t) / ($vol * sqrt($t));
     my $dq  = $da /  ($vol * sqrt($t));
     my $ddq = $dda / ($vol * sqrt($t));
 
@@ -63,12 +63,12 @@ sub call {
 sub put {
     my ($S, $D, $t, $r_q, $mu, $vol) = @_;
 
-    my $v   = $mu - ($vol**2) / 2;
-    my $log = log($D / $S);
-    my $db  = -1 / $S;
-    my $ddb = 1 / ($S * $S);
+    my $v         = $mu - ($vol**2) / 2;
+    my $log_value = log($D / $S);
+    my $db        = -1 / $S;
+    my $ddb       = 1 / ($S * $S);
 
-    my $q = ($log - $v * $t) / ($vol * sqrt($t));
+    my $q   = ($log_value - $v * $t) / ($vol * sqrt($t));
     my $dq  = $db /  ($vol * sqrt($t));
     my $ddq = $ddb / ($vol * sqrt($t));
 
