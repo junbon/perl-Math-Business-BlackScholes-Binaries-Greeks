@@ -238,7 +238,7 @@ These can be called for each of the six Greeks modules
 
 =item L<Math::Trig>
 
-=item L<Math::Business::BlackScholes::Binaries>
+=item L<Math::Business::BlackScholesMerton>
 
 =back
 
